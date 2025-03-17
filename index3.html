@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Hover Grid</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .grid-item {
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+        }
+        .background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 1;
+            transition: opacity 1.5s ease-in-out;
+            pointer-events: none;
+        }
+        .floating-box {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            width: 23%;
+            height: auto;
+            background: rgba(255, 255, 255, 0.0);
+            border-radius: 5px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .floating-box a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .floating-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="background" id="background1"></div>
+        <div class="background" id="background2" style="opacity: 0;"></div>
+    </div>
+    <div class="container" id="gridContainer"></div>
+    <div class="floating-box">
+        <a href="mailto:email@example.com">
+            <img src="home/kutschke.png" alt="Kontakt">
+        </a>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById("gridContainer");
+            const bg1 = document.getElementById("background1");
+            const bg2 = document.getElementById("background2");
+            let activeBg = bg1, inactiveBg = bg2;
+            let canChange = true;
+
+            function getRandomImage() {
+                return `home/image${Math.floor(Math.random() * 12) + 1}.png`;
+            }
+
+            activeBg.style.backgroundImage = `url(${getRandomImage()})`; // Setzt ein zufälliges Startbild
+            
+            for (let i = 0; i < 12; i++) {
+                let cell = document.createElement("div");
+                cell.classList.add("grid-item");
+                container.appendChild(cell);
+                
+                cell.addEventListener("mouseenter", () => {
+                    if (!canChange) return;
+                    canChange = false;
+                    
+                    let newImage = getRandomImage();
+                    inactiveBg.style.backgroundImage = `url(${newImage})`;
+                    inactiveBg.style.opacity = 1;
+                    activeBg.style.opacity = 0;
+                    
+                    [activeBg, inactiveBg] = [inactiveBg, activeBg]; // Wechsel der Layer
+                    
+                    setTimeout(() => {
+                        canChange = true;
+                    }, 1000); // 2 Sekunden Sperrzeit
+                });
+            }
+        });
+    </script>
+</body>
+</html>
